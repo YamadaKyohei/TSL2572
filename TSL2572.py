@@ -5,8 +5,6 @@
 #SCL    <-> 05
 #SDA    <-> 03
 
-#Python 2.7.16
-
 import time
 import smbus
 i2c = smbus.SMBus(1)
@@ -27,7 +25,7 @@ TSL2572_PON   = 0x01
 TSL2572_ENABLE   = 0x00
 TSL2572_ATIME    = 0x01
 TSL2572_WTIME    = 0x03
-TSL2572_AILTL    = 0x04
+TSL2572_AILTL    = 0x05
 TSL2572_AILTH    = 0x05
 TSL2572_AIHTL    = 0x06
 TSL2572_AIHTH    = 0x07
@@ -73,24 +71,20 @@ def getTSL2572adc() :
 
 
 #main
-print("init....")
 if (initTSL2572()!=0) :
- print("Failed. Check connection!!")
  sys.exit()
 
-while 1:
-  adc = getTSL2572adc()
+adc = getTSL2572adc()
 
-  cpl = 0.0
-  lux1 = 0.0
-  lux2 = 0.0
-  cpl = (2.73 * (256 - atime) * gain)/(60.0)
-  lux1 = ((adc[0] * 1.00) - (adc[1] * 1.87)) / cpl
-  lux2 = ((adc[0] * 0.63) - (adc[1] * 1.00)) / cpl
-  if ((lux1 <= 0) and (lux2 <= 0)) :
-    print("0 Lx")
-  elif (lux1 > lux2) :
-    print("{:.1f} Lx".format(lux1))
-  elif (lux1 < lux2) :
-    print("{:.1f} Lx".format(lux2))
-  time.sleep(0.2)
+cpl = 0.0
+lux1 = 0.0
+lux2 = 0.0
+cpl = (2.73 * (256 - atime) * gain)/(60.0)
+lux1 = ((adc[0] * 1.00) - (adc[1] * 1.87)) / cpl
+lux2 = ((adc[0] * 0.63) - (adc[1] * 1.00)) / cpl
+if ((lux1 <= 0) and (lux2 <= 0)) :
+  print("0")
+elif (lux1 > lux2) :
+  print("{:.1f}".format(lux1))
+elif (lux1 < lux2) :
+  print("{:.1f}".format(lux2))
